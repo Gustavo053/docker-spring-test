@@ -1,0 +1,32 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  logging:
+#    loglevel: debug
+
+  jaeger:
+    endpoint: jaeger-service:14250
+    tls:
+      insecure: true
+
+  kafka:
+    auth:
+      tls:
+        insecure: true
+    brokers:
+      - localhost:9092
+    protocol_version: 2.0.0
+
+service:
+  pipelines:
+    traces:
+      receivers:  [ otlp ]
+      processors: [ batch ]
+      exporters:  [ logging, jaeger, kafka ]
